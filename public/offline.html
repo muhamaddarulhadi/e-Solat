@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ms" class="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Tiada Sambungan - Waktu Solat Malaysia</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:#0a1a12;color:#e2e8f0;font-family:Inter,system-ui,sans-serif;
+      padding:2rem;text-align:center;
+    }
+    .icon{font-size:4rem;margin-bottom:1.5rem}
+    h1{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.75rem}
+    p{color:#94a3b8;font-size:.9rem;line-height:1.6;max-width:300px;margin:0 auto}
+    .btn{
+      display:inline-block;margin-top:1.5rem;padding:.75rem 1.5rem;
+      background:#16a34a;color:#fff;border:none;border-radius:12px;
+      font-weight:600;font-size:.9rem;cursor:pointer;transition:background .2s;
+    }
+    .btn:hover{background:#15803d}
+    .note{margin-top:1rem;font-size:.75rem;color:#475569}
+  </style>
+</head>
+<body>
+  <div>
+    <div class="icon">🕌</div>
+    <h1>Tiada Sambungan Internet</h1>
+    <p>Sila semak sambungan internet anda dan cuba lagi untuk mendapatkan waktu solat terkini.</p>
+    <button class="btn" onclick="window.location.reload()">Cuba Semula</button>
+    <p class="note">Data waktu solat yang telah dicache mungkin masih tersedia apabila dalam talian.</p>
+  </div>
+</body>
+</html>

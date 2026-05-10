@@ -1,0 +1,25 @@
+{
+  "name": "Waktu Solat Malaysia",
+  "short_name": "Waktu Solat",
+  "description": "Jadual waktu solat Malaysia yang tepat dan cantik",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1f17",
+  "theme_color": "#1a6b4a",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

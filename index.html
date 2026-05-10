@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ms" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1a6b4a" />
+    <meta name="description" content="Jadual Waktu Solat Malaysia - Tepat, Cantik dan Mudah Digunakan" />
+    <meta name="keywords" content="waktu solat, prayer times, malaysia, muslim, islam, jadual solat" />
+    <meta name="author" content="Waktu Solat Malaysia" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Waktu Solat" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Waktu Solat Malaysia" />
+    <meta property="og:description" content="Jadual Waktu Solat Malaysia yang tepat dan cantik" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+
+    <title>Waktu Solat Malaysia</title>
+
+    <style>
+      /* Prevent flash of unstyled content */
+      html { background-color: #0a1a12; }
+      html.light { background-color: #f0fdf4; }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
+  </body>
+</html>

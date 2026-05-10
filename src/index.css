@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --safe-bottom: env(safe-area-inset-bottom); }
+  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Inter', system-ui, sans-serif; min-height: 100dvh; overscroll-behavior-y: none; }
+  html.dark body  { background: #060d0a; color: #e8f5ee; }
+  html.light body { background: #f0f7f3; color: #0d2018; }
+}
+
+/* ── Prevent FOUC ─────────────────────────────────────────────── */
+html       { background: #060d0a; }
+html.light { background: #f0f7f3; }
+
+/* ── Cards ────────────────────────────────────────────────────── */
+.card { border-radius: 1.5rem; border: 1px solid transparent; transition: all 0.3s; }
+html.dark  .card { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+html.light .card { background: rgba(255,255,255,0.9);  border-color: rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04); }
+
+/* ── Active prayer row ───────────────────────────────────────── */
+.prayer-active-row { border-radius: 1rem; border: 1px solid transparent; overflow: hidden; }
+html.dark  .prayer-active-row { background: linear-gradient(135deg,rgba(16,185,129,0.18),rgba(5,150,105,0.10)); border-color: rgba(16,185,129,0.35); box-shadow: 0 0 20px rgba(16,185,129,0.12),inset 0 1px 0 rgba(255,255,255,0.05); }
+html.light .prayer-active-row { background: linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.06)); border-color: rgba(16,185,129,0.3);  box-shadow: 0 4px 12px rgba(16,185,129,0.15); }
+
+/* ── Glow pulse ─────────────────────────────────────────────── */
+.glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 12px rgba(16,185,129,0.12); }
+  50%      { box-shadow: 0 0 28px rgba(16,185,129,0.32),0 0 56px rgba(16,185,129,0.10); }
+}
+
+/* ── Bottom navigation ──────────────────────────────────────── */
+.nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.25rem; padding:0.5rem 0.75rem; border-radius:1rem; transition:all 0.2s; cursor:pointer; user-select:none; flex:1; }
+.nav-item.active { color:#10b981; background:rgba(16,185,129,0.15); }
+html.light .nav-item.active { color:#059669; background:rgba(16,185,129,0.12); }
+.nav-item:not(.active) { color:#6b7280; }
+
+/* ── Page transition ────────────────────────────────────────── */
+.page-enter { animation: pageIn 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes pageIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+.scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+.scrollbar-hide::-webkit-scrollbar { display:none; }
+.table-scroll { overflow-x:auto; }
+.table-scroll::-webkit-scrollbar        { height:3px; }
+.table-scroll::-webkit-scrollbar-track  { background:transparent; }
+.table-scroll::-webkit-scrollbar-thumb  { background:#10b981; border-radius:99px; }
+
+/* ── Gradient text ──────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg,#34d399,#10b981,#059669);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* ── Arabic font ────────────────────────────────────────────── */
+.arabic { font-family:'Amiri',serif; direction:rtl; }
+
+/* ── Install prompt ─────────────────────────────────────────── */
+@keyframes slideUp {
+  from { transform:translateY(100%); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
+}
+.install-prompt { animation: slideUp 0.4s cubic-bezier(0.22,1,0.36,1); }
