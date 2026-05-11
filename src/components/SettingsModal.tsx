@@ -1,6 +1,6 @@
 import { useTheme } from '../hooks/useTheme'
 import type { NotificationSettings } from '../hooks/useNotifications'
-import { PRAYER_META, COUNTABLE_PRAYERS, type PrayerKey } from '../utils/prayerUtils'
+import { PRAYER_META, PRAYER_KEYS, COUNTABLE_PRAYERS, type PrayerKey } from '../utils/prayerUtils'
 
 interface SettingsModalProps {
   open: boolean
@@ -9,10 +9,10 @@ interface SettingsModalProps {
   onNotifChange: (s: NotificationSettings) => void
   onNotifToggle: () => void
   permission: NotificationPermission
-  use24h: boolean
-  onToggle24h: () => void
   azanEnabled: boolean
   onToggleAzan: () => void
+  visiblePrayersDaily: PrayerKey[]
+  onVisiblePrayersDailyChange: (keys: PrayerKey[]) => void
   favoriteZones: string[]
   onClearFavorites: () => void
 }
@@ -24,10 +24,10 @@ export function SettingsModal({
   onNotifChange,
   onNotifToggle,
   permission,
-  use24h,
-  onToggle24h,
   azanEnabled,
   onToggleAzan,
+  visiblePrayersDaily,
+  onVisiblePrayersDailyChange,
   favoriteZones,
   onClearFavorites,
 }: SettingsModalProps) {
@@ -40,6 +40,17 @@ export function SettingsModal({
       ? notifSettings.enabledPrayers.filter(p => p !== key)
       : [...notifSettings.enabledPrayers, key]
     onNotifChange({ ...notifSettings, enabledPrayers: prayers })
+  }
+
+  const toggleDailyVisible = (key: PrayerKey) => {
+    const isVisible = visiblePrayersDaily.includes(key)
+    // Keep at least 1 visible
+    if (isVisible && visiblePrayersDaily.length === 1) return
+    const next = isVisible
+      ? visiblePrayersDaily.filter(k => k !== key)
+      : [...visiblePrayersDaily, key]
+    // Preserve PRAYER_KEYS order
+    onVisiblePrayersDailyChange(PRAYER_KEYS.filter(k => next.includes(k)))
   }
 
   return (
@@ -83,13 +94,47 @@ export function SettingsModal({
             >
               <Toggle checked={isDark} onChange={toggle} />
             </SettingRow>
-            <SettingRow
-              label="Format 24 Jam"
-              desc="Papar masa dalam format 24 jam"
-              isDark={isDark}
-            >
-              <Toggle checked={use24h} onChange={onToggle24h} />
-            </SettingRow>
+          </Section>
+
+          {/* Daily prayer visibility */}
+          <Section title="Waktu Solat Dipapar (Harian)" isDark={isDark}>
+            <div className={`px-4 py-3.5 rounded-2xl ${isDark ? 'bg-transparent' : 'bg-white'}`}>
+              <p className={`text-xs mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Pilih waktu solat yang ingin dipapar pada halaman utama
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PRAYER_KEYS.map(key => {
+                  const active = visiblePrayersDaily.includes(key)
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => toggleDailyVisible(key)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all
+                        ${active
+                          ? isDark ? 'bg-primary-500/20 text-primary-300 border border-primary-500/40' : 'bg-primary-50 text-primary-700 border border-primary-300'
+                          : isDark ? 'bg-white/5 text-slate-500 border border-white/10' : 'bg-slate-50 text-slate-400 border border-slate-200'
+                        }
+                      `}
+                    >
+                      <span style={{
+                        width: 12, height: 12, borderRadius: 2, flexShrink: 0,
+                        border: `1.5px solid ${active ? '#10b981' : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'}`,
+                        background: active ? '#10b981' : 'transparent',
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {active && (
+                          <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
+                            <path d="M1 3.5L2.8 5.5L6 1.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </span>
+                      <span>{PRAYER_META[key].icon}</span>
+                      <span>{PRAYER_META[key].nameMs}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           </Section>
 
           {/* Notifications */}
