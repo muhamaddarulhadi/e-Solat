@@ -7,10 +7,9 @@ import dayjs from 'dayjs'
 
 interface MonthlyPageProps {
   zone: string
-  use24h: boolean
 }
 
-export function MonthlyPage({ zone, use24h }: MonthlyPageProps) {
+export function MonthlyPage({ zone }: MonthlyPageProps) {
   const { isDark } = useTheme()
   const { data, loading, error, refetch } = usePrayerTimes(zone, 'month')
   const [downloading, setDownloading] = useState(false)
@@ -88,7 +87,7 @@ export function MonthlyPage({ zone, use24h }: MonthlyPageProps) {
       {loading ? (
         <PrayerTableSkeleton />
       ) : (
-        <PrayerTable data={data} use24h={use24h} />
+        <PrayerTable data={data} storageKey="visible_prayers_monthly" />
       )}
 
       {data.length > 0 && (
