@@ -8,12 +8,12 @@ interface CountdownTimerProps {
   currentPrayer: PrayerKey | null
   countdown: string
   now: Date
-  use24h: boolean
 }
 
-export function CountdownTimer({ nextPrayer, nextPrayerTime, currentPrayer, countdown, now, use24h }: CountdownTimerProps) {
+export function CountdownTimer({ nextPrayer, nextPrayerTime, currentPrayer, countdown, now }: CountdownTimerProps) {
   const { isDark } = useTheme()
   const [hh, mm, ss] = countdown.split(':')
+  const ampm = dayjs(now).format('A')
 
   return (
     <div className="relative overflow-hidden rounded-3xl p-6"
@@ -31,17 +31,23 @@ export function CountdownTimer({ nextPrayer, nextPrayerTime, currentPrayer, coun
       />
 
       <div className="relative z-10">
-        {/* Live clock */}
+        {/* Live clock — 12h format */}
         <div className="text-center mb-5">
-          <div className="flex items-baseline justify-center">
-            <span className={`text-6xl font-bold tracking-tight tabular-nums ${isDark ? 'text-white' : 'text-slate-900'}`}
+          <div className="flex items-baseline justify-center gap-1">
+            <span
+              className={`text-6xl font-bold tracking-tight tabular-nums ${isDark ? 'text-white' : 'text-slate-900'}`}
               style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}
             >
-              {dayjs(now).format('HH:mm')}
+              {dayjs(now).format('hh:mm')}
             </span>
-            <span className={`text-2xl font-medium ml-0.5 ${isDark ? 'text-emerald-500/70' : 'text-emerald-600/70'}`}>
-              {dayjs(now).format(':ss')}
-            </span>
+            <div className="flex flex-col items-start">
+              <span className={`text-lg font-bold leading-none ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                {ampm}
+              </span>
+              <span className={`text-xl font-medium leading-none ${isDark ? 'text-emerald-500/70' : 'text-emerald-600/70'}`}>
+                {dayjs(now).format(':ss')}
+              </span>
+            </div>
           </div>
           <p className={`text-sm mt-1 font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             {dayjs(now).format('dddd, D MMMM YYYY')}
@@ -65,11 +71,7 @@ export function CountdownTimer({ nextPrayer, nextPrayerTime, currentPrayer, coun
                   {PRAYER_META[nextPrayer].nameMs}
                 </p>
                 <p className={`text-lg font-semibold mt-0.5 ${isDark ? 'text-emerald-300' : 'text-emerald-700'}`}>
-                  {nextPrayerTime
-                    ? use24h
-                      ? dayjs(nextPrayerTime).format('HH:mm')
-                      : formatTime12(dayjs(nextPrayerTime).format('HH:mm:ss'))
-                    : ''}
+                  {nextPrayerTime ? formatTime12(dayjs(nextPrayerTime).format('HH:mm:ss')) : ''}
                 </p>
               </div>
             </div>
