@@ -2,11 +2,9 @@ import { useTheme } from '../hooks/useTheme'
 
 interface HeaderProps {
   onSettingsOpen: () => void
-  onInstallClick?: () => void
-  canInstall?: boolean
 }
 
-export function Header({ onSettingsOpen, onInstallClick, canInstall }: HeaderProps) {
+export function Header({ onSettingsOpen }: HeaderProps) {
   const { isDark, toggle } = useTheme()
 
   return (
@@ -21,34 +19,19 @@ export function Header({ onSettingsOpen, onInstallClick, canInstall }: HeaderPro
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl flex items-center justify-center shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#10b981,#047857)' }}
-          >
+            style={{ background: 'linear-gradient(135deg,#10b981,#047857)' }}>
             <span className="text-white text-base">☪</span>
           </div>
           <div>
             <p className={`font-bold text-sm leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>
               Waktu Solat
             </p>
-            <p className="text-xs font-medium mt-0.5" style={{ color: '#10b981' }}>
-              Malaysia
-            </p>
+            <p className="text-xs font-medium mt-0.5" style={{ color: '#10b981' }}>Malaysia</p>
           </div>
         </div>
 
         {/* Right actions */}
         <div className="flex items-center gap-1">
-          {canInstall && (
-            <button onClick={onInstallClick}
-              className="mr-1 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl"
-              style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-              </svg>
-              Pasang
-            </button>
-          )}
-
           <IconBtn onClick={toggle} label="Tukar tema" isDark={isDark}>
             {isDark
               ? <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><circle cx="12" cy="12" r="5"/><path strokeLinecap="round" d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
