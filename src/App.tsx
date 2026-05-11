@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Header } from './components/Header'
+import { InstallBanner } from './components/InstallBanner'
 import { BottomNavigation, type NavPage } from './components/BottomNavigation'
 import { SettingsModal } from './components/SettingsModal'
 import { HomePage } from './pages/Home'
@@ -8,14 +9,14 @@ import { MonthlyPage } from './pages/Monthly'
 import { useTodayPrayer } from './hooks/usePrayerTimes'
 import { useNotifications } from './hooks/useNotifications'
 import { useAzan } from './hooks/useAzan'
-import { syncClock } from './services/timeSync'
 import { DEFAULT_ZONE } from './utils/zones'
+import { PRAYER_KEYS, type PrayerKey } from './utils/prayerUtils'
 
 const STORAGE_KEYS = {
-  zone:     'selected_zone',
-  use24h:   'use_24h',
-  azan:     'azan_enabled',
-  favs:     'favorite_zones',
+  zone:          'selected_zone',
+  azan:          'azan_enabled',
+  favs:          'favorite_zones',
+  visibleDaily:  'visible_prayers_daily',
 }
 
 function loadPref<T>(key: string, fallback: T): T {
@@ -27,23 +28,23 @@ function loadPref<T>(key: string, fallback: T): T {
 }
 
 export default function App() {
-
-  const [zone, setZone] = useState<string>(() => loadPref(STORAGE_KEYS.zone, DEFAULT_ZONE))
-  const [page, setPage]     = useState<NavPage>('home')
+  const [zone, setZone]               = useState<string>(() => loadPref(STORAGE_KEYS.zone, DEFAULT_ZONE))
+  const [page, setPage]               = useState<NavPage>('home')
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [use24h, setUse24h] = useState<boolean>(() => loadPref(STORAGE_KEYS.use24h, false))
   const [azanEnabled, setAzanEnabled] = useState<boolean>(() => loadPref(STORAGE_KEYS.azan, true))
   const [favoriteZones, setFavoriteZones] = useState<string[]>(() => loadPref(STORAGE_KEYS.favs, []))
   const [installPrompt, setInstallPrompt] = useState<any>(null)
-  const [canInstall, setCanInstall] = useState(false)
+  const [canInstall, setCanInstall]   = useState(false)
+
+  // Which prayers are visible on the home (daily) page — all by default
+  const [visiblePrayersDaily, setVisiblePrayersDaily] = useState<PrayerKey[]>(
+    () => loadPref<PrayerKey[]>(STORAGE_KEYS.visibleDaily, [...PRAYER_KEYS])
+  )
 
   const { today, loading, error, refetch } = useTodayPrayer(zone)
-  const { settings: notifSettings, saveSettings: saveNotifSettings, permission, requestPermission, toggleEnabled } = useNotifications(today)
+  const { settings: notifSettings, saveSettings: saveNotifSettings, permission, toggleEnabled } = useNotifications(today)
 
   useAzan(today, azanEnabled)
-
-  // Clock sync on mount
-  useEffect(() => { syncClock() }, [])
 
   // Capture PWA install prompt
   useEffect(() => {
@@ -62,20 +63,18 @@ export default function App() {
     localStorage.setItem(STORAGE_KEYS.zone, JSON.stringify(z))
   }, [])
 
-  // Persist 24h
-  const toggle24h = () => {
-    setUse24h(v => {
-      localStorage.setItem(STORAGE_KEYS.use24h, JSON.stringify(!v))
-      return !v
-    })
-  }
-
   // Persist azan
   const toggleAzan = () => {
     setAzanEnabled(v => {
       localStorage.setItem(STORAGE_KEYS.azan, JSON.stringify(!v))
       return !v
     })
+  }
+
+  // Persist visible daily prayers
+  const saveVisiblePrayersDaily = (keys: PrayerKey[]) => {
+    setVisiblePrayersDaily(keys)
+    localStorage.setItem(STORAGE_KEYS.visibleDaily, JSON.stringify(keys))
   }
 
   // Favorite zones
@@ -102,11 +101,8 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Header
         onSettingsOpen={() => setSettingsOpen(true)}
-        onInstallClick={handleInstallClick}
-        canInstall={canInstall}
       />
 
-      {/* Main content */}
       <main
         className="flex-1 w-full max-w-lg mx-auto px-4 pt-4 pb-32"
         style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}
@@ -119,18 +115,18 @@ export default function App() {
             loading={loading}
             error={error}
             onRefetch={refetch}
-            use24h={use24h}
+            visiblePrayers={visiblePrayersDaily}
             favoriteZones={favoriteZones}
             onToggleFavorite={toggleFavorite}
           />
         )}
-        {page === 'weekly' && (
-          <WeeklyPage zone={zone} use24h={use24h} />
-        )}
-        {page === 'monthly' && (
-          <MonthlyPage zone={zone} use24h={use24h} />
-        )}
+        {page === 'weekly'  && <WeeklyPage  zone={zone} />}
+        {page === 'monthly' && <MonthlyPage zone={zone} />}
       </main>
+
+      {canInstall && (
+        <InstallBanner onInstall={handleInstallClick} onDismiss={() => setCanInstall(false)} />
+      )}
 
       <BottomNavigation active={page} onChange={setPage} />
 
@@ -141,10 +137,10 @@ export default function App() {
         onNotifChange={saveNotifSettings}
         onNotifToggle={toggleEnabled}
         permission={permission}
-        use24h={use24h}
-        onToggle24h={toggle24h}
         azanEnabled={azanEnabled}
         onToggleAzan={toggleAzan}
+        visiblePrayersDaily={visiblePrayersDaily}
+        onVisiblePrayersDailyChange={saveVisiblePrayersDaily}
         favoriteZones={favoriteZones}
         onClearFavorites={() => {
           setFavoriteZones([])
