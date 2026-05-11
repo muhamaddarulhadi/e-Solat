@@ -4,7 +4,7 @@ import { CountdownTimer } from '../components/CountdownTimer'
 import { PrayerCard, PrayerCardSkeleton } from '../components/PrayerCard'
 import { ZoneSelector } from '../components/ZoneSelector'
 import { HijriDate } from '../components/HijriDate'
-import { PRAYER_KEYS, getPrayerStatus } from '../utils/prayerUtils'
+import { PRAYER_KEYS, getPrayerStatus, type PrayerKey } from '../utils/prayerUtils'
 import type { PrayerSchedule } from '../utils/prayerUtils'
 import { getZoneState } from '../utils/zones'
 
@@ -15,14 +15,14 @@ interface HomePageProps {
   loading: boolean
   error: string | null
   onRefetch: () => void
-  use24h: boolean
+  visiblePrayers: PrayerKey[]
   favoriteZones: string[]
   onToggleFavorite: (z: string) => void
 }
 
 export function HomePage({
-  zone, onZoneChange, today, loading, error, onRefetch, use24h,
-  favoriteZones, onToggleFavorite,
+  zone, onZoneChange, today, loading, error, onRefetch,
+  visiblePrayers, favoriteZones, onToggleFavorite,
 }: HomePageProps) {
   const { isDark } = useTheme()
   const countdown = useCountdown(today)
@@ -88,7 +88,6 @@ export function HomePage({
         currentPrayer={countdown.currentPrayer}
         countdown={countdown.countdown}
         now={countdown.now}
-        use24h={use24h}
       />
 
       {/* Prayer list */}
@@ -117,14 +116,13 @@ export function HomePage({
 
         <div className="space-y-2" role="list">
           {loading
-            ? Array.from({ length: 8 }).map((_, i) => <PrayerCardSkeleton key={i} />)
-            : PRAYER_KEYS.map(key => (
+            ? Array.from({ length: visiblePrayers.length || 8 }).map((_, i) => <PrayerCardSkeleton key={i} />)
+            : PRAYER_KEYS.filter(k => visiblePrayers.includes(k)).map(key => (
                 <PrayerCard
                   key={key}
                   prayerKey={key}
                   schedule={today}
                   status={getPrayerStatus(key, today, countdown.now)}
-                  use24h={use24h}
                 />
               ))
           }
