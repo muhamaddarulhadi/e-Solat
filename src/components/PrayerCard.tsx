@@ -5,14 +5,13 @@ interface PrayerCardProps {
   prayerKey: PrayerKey
   schedule: PrayerSchedule | null
   status: 'active' | 'passed' | 'upcoming'
-  use24h?: boolean
 }
 
-export function PrayerCard({ prayerKey, schedule, status, use24h = false }: PrayerCardProps) {
+export function PrayerCard({ prayerKey, schedule, status }: PrayerCardProps) {
   const { isDark } = useTheme()
   const meta = PRAYER_META[prayerKey]
   const timeStr = schedule?.[prayerKey] ?? '--:--'
-  const displayTime = use24h ? (timeStr.slice(0, 5) || '--:--') : formatTime12(timeStr)
+  const displayTime = formatTime12(timeStr)
   const isActive = status === 'active'
   const isPassed = status === 'passed'
 
