@@ -6,10 +6,9 @@ import { getZoneState, getZoneDaerah } from '../utils/zones'
 
 interface WeeklyPageProps {
   zone: string
-  use24h: boolean
 }
 
-export function WeeklyPage({ zone, use24h }: WeeklyPageProps) {
+export function WeeklyPage({ zone }: WeeklyPageProps) {
   const { isDark } = useTheme()
   const { data, loading, error, refetch } = usePrayerTimes(zone, 'week')
 
@@ -53,7 +52,7 @@ export function WeeklyPage({ zone, use24h }: WeeklyPageProps) {
       {loading ? (
         <PrayerTableSkeleton />
       ) : (
-        <PrayerTable data={data} use24h={use24h} />
+        <PrayerTable data={data} storageKey="visible_prayers_weekly" />
       )}
     </div>
   )
