@@ -97,11 +97,11 @@ export function ZoneSelector({ value, onChange, className = '' }: ZoneSelectorPr
               <input ref={searchRef} type="text" value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Cari negeri, zon, daerah..."
-                className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all ${
-                  isDark
-                    ? 'bg-white/8 border border-white/10 text-white placeholder-slate-500 focus:border-emerald-500/50'
-                    : 'bg-slate-50 border border-black/8 text-slate-900 placeholder-slate-400 focus:border-emerald-400'
-                }`}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                style={isDark
+                  ? { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#ffffff' }
+                  : { background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', color: '#0f172a' }
+                }
               />
             </div>
           </div>
