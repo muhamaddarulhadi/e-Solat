@@ -8,19 +8,19 @@ Live demo: **https://muhamaddarulhadi.github.io/e-Solat/**
 
 ## Features
 
-- **Today's prayer times** — full schedule for the current day with countdown timer to the next prayer
-- **Weekly & monthly schedule** — scrollable tables with today highlighted
-- **All 14 states & 73 zones** — searchable by state name, zone code, or district name
-- **Automatic countdown** — live clock and countdown (hours : minutes : seconds) to the next prayer
+- **Today's prayer times** — full schedule for the current day with live countdown timer to the next prayer
+- **Weekly & monthly schedule** — scrollable tables with today highlighted and drag-to-scroll support
+- **Column visibility toggle** — show/hide individual prayer columns on weekly & monthly tables (saved per view)
+- **All 14 states & 73 zones** — searchable by state name or district; zone code hidden for a cleaner UI
+- **Automatic countdown** — live clock and countdown (hours : minutes : seconds) to the next prayer in AM/PM format
 - **Azan alert** — plays an azan sound in-browser when a prayer time is reached
-- **Push notifications** — optional browser notifications for each prayer (configurable per prayer)
-- **12h / 24h toggle** — switch between AM/PM and 24-hour display
-- **Dark / light theme** — system-default, persists across sessions
-- **Hijri date** — displayed on the home screen
-- **CSV export** — download the monthly schedule as a `.csv` file
-- **Offline support** — previously loaded data is cached and available without internet
-- **Installable PWA** — install on Android, iOS, Windows, or macOS like a native app
-- **Favourite zones** — pin up to 5 zones for quick switching
+- **Push notifications** — optional browser notifications for each prayer (configurable per prayer in Settings)
+- **Dark / light theme** — persists across sessions
+- **Hijri date** — displayed on the home screen using the API-provided Hijri date
+- **Favourite zones** — pin up to 5 zones for quick one-tap switching
+- **Visible prayers (Settings)** — choose which prayers appear on the home daily card (independent from table settings)
+- **In-app install banner** — a banner automatically appears at the bottom of the screen when the browser is ready to install the PWA; one tap installs instantly
+- **Offline support** — previously loaded data is cached by the service worker and available without internet
 
 ---
 
@@ -53,12 +53,13 @@ src/
 ├── components/
 │   ├── BottomNavigation.tsx   # Tab bar (Home / Weekly / Monthly)
 │   ├── CountdownTimer.tsx     # Live clock + next prayer countdown card
-│   ├── Header.tsx             # App bar with settings and install button
+│   ├── Header.tsx             # App bar with theme toggle and settings button
 │   ├── HijriDate.tsx          # Hijri calendar display
+│   ├── InstallBanner.tsx      # Auto-appearing PWA install banner
 │   ├── PrayerCard.tsx         # Single prayer time card (home page)
-│   ├── PrayerTable.tsx        # Weekly / monthly table with sticky date column
-│   ├── SettingsModal.tsx      # Settings drawer
-│   └── ZoneSelector.tsx       # Searchable zone picker
+│   ├── PrayerTable.tsx        # Weekly / monthly table with column toggle & drag scroll
+│   ├── SettingsModal.tsx      # Settings drawer (notifications, azan, visible prayers)
+│   └── ZoneSelector.tsx       # Searchable zone picker (state + district)
 ├── contexts/
 │   └── ThemeContext.tsx        # Global dark/light theme state
 ├── hooks/
@@ -72,16 +73,15 @@ src/
 │   ├── Monthly.tsx            # Monthly schedule tab
 │   └── Weekly.tsx             # Weekly schedule tab
 ├── services/
-│   ├── prayerApi.ts           # e-Solat API client + in-memory cache
-│   └── timeSync.ts            # Sync local clock with server time
+│   └── prayerApi.ts           # e-Solat API client + in-memory cache
 └── utils/
-    ├── hijriDate.ts           # Gregorian → Hijri conversion
-    ├── prayerUtils.ts         # Prayer keys, metadata, date/time helpers
-    └── zones.ts               # All 73 Malaysia prayer zones
+    ├── hijriDate.ts           # Gregorian → Hijri conversion helper
+    ├── prayerUtils.ts         # Prayer keys, metadata, AM/PM time formatting
+    └── zones.ts               # All 73 Malaysia prayer zones with state & district info
 public/
 ├── manifest.json              # PWA manifest
 ├── sw.js                      # Service worker (cache + offline)
-└── icons/                     # App icons (72 → 512 px)
+└── icons/                     # App icons (192 px & 512 px)
 ```
 
 ---
@@ -134,7 +134,7 @@ The project includes a GitHub Actions workflow that builds and deploys automatic
 
 1. Push the repo to GitHub
 2. Go to **Settings → Pages → Source** and select **GitHub Actions**
-3. Push any commit to `main` — the workflow will build and deploy
+3. Push any commit to `main` — the workflow will build and deploy automatically
 
 The workflow file is at [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
@@ -142,14 +142,17 @@ The workflow file is at [`.github/workflows/deploy.yml`](.github/workflows/deplo
 
 ## PWA Installation
 
-### Android (Chrome)
-Open the site → tap the **"Add to Home Screen"** banner or the install icon in the address bar.
+When you open the deployed site in a supported browser, an **install banner** automatically appears at the bottom of the screen. Tap **"Pasang"** to install the app instantly — no extra steps needed.
 
-### iOS (Safari)
-Open the site → tap **Share** → **Add to Home Screen**.
+### Manual install (if banner does not appear)
 
-### Desktop (Chrome / Edge)
-Open the site → click the **⊕ install** icon in the browser address bar.
+| Platform | Steps |
+|---|---|
+| Android (Chrome) | Tap the **⋮ menu** → **Add to Home Screen** |
+| iOS (Safari) | Tap **Share** → **Add to Home Screen** |
+| Desktop (Chrome / Edge) | Click the **⊕** icon in the address bar |
+
+> The install banner only appears when the browser determines the PWA criteria are met (served over HTTPS, valid manifest, active service worker).
 
 ---
 
@@ -158,6 +161,23 @@ Open the site → click the **⊕ install** icon in the browser address bar.
 All 73 JAKIM prayer zones are supported, covering all 14 Malaysian states and federal territories:
 
 Johor · Kedah · Kelantan · Melaka · Negeri Sembilan · Pahang · Perak · Perlis · Pulau Pinang · Sabah · Sarawak · Selangor · Terengganu · W.P. Kuala Lumpur · W.P. Labuan · W.P. Putrajaya
+
+---
+
+## Local Storage
+
+All user preferences are stored per device, per browser. Each user's data is completely independent.
+
+| Key | Description |
+|---|---|
+| `selected_zone` | Last selected prayer zone |
+| `azan_enabled` | Azan audio on/off |
+| `favorite_zones` | Up to 5 pinned zones |
+| `visible_prayers_daily` | Which prayers appear on the home page |
+| `visible_prayers_weekly` | Which columns appear in the weekly table |
+| `visible_prayers_monthly` | Which columns appear in the monthly table |
+| `theme` | Dark or light mode preference |
+| `notif_settings` | Per-prayer notification preferences |
 
 ---
 
