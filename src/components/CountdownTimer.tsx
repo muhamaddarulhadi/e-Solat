@@ -18,16 +18,16 @@ export function CountdownTimer({ nextPrayer, nextPrayerTime, currentPrayer, coun
   return (
     <div className="relative overflow-hidden rounded-3xl p-6"
       style={isDark
-        ? { background: 'linear-gradient(135deg, #0a2218 0%, #071a11 50%, #050f0a 100%)', border: '1px solid rgba(16,185,129,0.15)' }
+        ? { background: 'linear-gradient(135deg, #1c1c21 0%, #17171b 50%, #0f0f11 100%)', border: '1px solid rgba(255,255,255,0.07)' }
         : { background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%)', border: '1px solid rgba(16,185,129,0.25)' }
       }
     >
-      {/* Decorative blur orb */}
+      {/* Decorative blur orb — subtle, not green */}
       <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)' }}
+        style={{ background: isDark ? 'radial-gradient(circle, rgba(16,185,129,0.06), transparent 70%)' : 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)' }}
       />
       <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full blur-2xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(5,150,105,0.1), transparent 70%)' }}
+        style={{ background: isDark ? 'radial-gradient(circle, rgba(16,185,129,0.04), transparent 70%)' : 'radial-gradient(circle, rgba(5,150,105,0.1), transparent 70%)' }}
       />
 
       <div className="relative z-10">
