@@ -1,5 +1,7 @@
-const CACHE_NAME = 'waktu-solat-v1';
+const CACHE_NAME = 'waktu-solat-v4';
 
+// Pre-cache the app shell — index.html MUST be here so Chrome considers
+// the PWA installable (it checks that start_url is served offline).
 const SHELL = [
   './index.html',
   './manifest.json',
@@ -7,7 +9,7 @@ const SHELL = [
   './icons/icon-512x512.png',
 ];
 
-// Install: cache app shell
+// Install: cache shell
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL).catch(() => {}))
@@ -25,12 +27,12 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Fetch strategy
+// Fetch
 self.addEventListener('fetch', e => {
   const url = e.request.url;
 
-  // API calls: network first, cache fallback
-  if (url.includes('e-solat.gov.my') || url.includes('corsproxy.io')) {
+  // API calls — network first, fall back to cache (offline support)
+  if (url.includes('e-solat.gov.my') || url.includes('corsproxy.io') || url.includes('allorigins.win')) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
@@ -45,19 +47,11 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Navigation: serve index.html (SPA support)
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      caches.match('./index.html').then(cached => cached || fetch(e.request))
-    );
-    return;
-  }
-
-  // Everything else: cache first, network fallback, cache dynamically
+  // Everything else — cache first, network fallback, cache dynamically
+  // Navigation requests (index.html) will be served from cache if offline.
   e.respondWith(
     caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
+      return cached || fetch(e.request).then(res => {
         if (res && res.status === 200 && res.type !== 'opaque') {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
@@ -71,5 +65,12 @@ self.addEventListener('fetch', e => {
 // Notification click
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  e.waitUntil(clients.openWindow('./index.html'));
+  if (e.action === 'dismiss') return;
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      const existing = list.find(c => c.url.includes('e-Solat') || c.url.endsWith('/'));
+      if (existing) return existing.focus();
+      return clients.openWindow('./index.html');
+    })
+  );
 });
