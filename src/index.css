@@ -7,13 +7,13 @@
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   body { font-family: 'Inter', system-ui, sans-serif; min-height: 100dvh; overscroll-behavior-y: none; }
-  html.dark body  { background: #060d0a; color: #e8f5ee; }
-  html.light body { background: #f0f7f3; color: #0d2018; }
+  html.dark body  { background: #0f0f11; color: #e2e8f0; }
+  html.light body { background: #f8fafc; color: #0f172a; }
 }
 
 /* ── Prevent FOUC ─────────────────────────────────────────────── */
-html       { background: #060d0a; }
-html.light { background: #f0f7f3; }
+html       { background: #0f0f11; }
+html.light { background: #f8fafc; }
 
 /* ── Cards ────────────────────────────────────────────────────── */
 .card { border-radius: 1.5rem; border: 1px solid transparent; transition: all 0.3s; }
