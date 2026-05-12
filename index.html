@@ -31,8 +31,8 @@
 
     <style>
       /* Prevent flash of unstyled content */
-      html { background-color: #0a1a12; }
-      html.light { background-color: #f0fdf4; }
+      html { background-color: #0f0f11; }
+      html.light { background-color: #f8fafc; }
     </style>
   </head>
   <body class="antialiased">
@@ -41,7 +41,9 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js');
+          navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(reg => { reg.update(); })
+            .catch(() => {});
         });
       }
     </script>
