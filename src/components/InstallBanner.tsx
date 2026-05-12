@@ -16,7 +16,7 @@ export function InstallBanner({ onInstall, onDismiss }: InstallBannerProps) {
       <div
         className={`w-full max-w-lg flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl ${
           isDark
-            ? 'bg-[#0f2318] border border-white/10'
+            ? 'bg-[#1c1c21] border border-white/10'
             : 'bg-white border border-black/8'
         }`}
         style={{ boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.6)' : '0 8px 32px rgba(0,0,0,0.15)' }}
