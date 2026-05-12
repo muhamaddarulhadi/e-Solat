@@ -12,7 +12,7 @@ export function Header({ onSettingsOpen }: HeaderProps) {
       <div className={`
         px-5 py-3.5 flex items-center justify-between
         ${isDark
-          ? 'bg-[#060d0a]/80 backdrop-blur-2xl border-b border-white/6'
+          ? 'bg-[#0f0f11]/80 backdrop-blur-2xl border-b border-white/6'
           : 'bg-white/80 backdrop-blur-2xl border-b border-black/6 shadow-sm'
         }
       `}>
