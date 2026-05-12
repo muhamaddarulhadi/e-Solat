@@ -12,9 +12,14 @@ export function WeeklyPage({ zone }: WeeklyPageProps) {
   const { isDark } = useTheme()
   const { data, loading, error, refetch } = usePrayerTimes(zone, 'week')
 
-  const weekRange = data.length
-    ? `${parseApiDate(data[0].date).format('D MMM')} – ${parseApiDate(data[data.length - 1].date).format('D MMM YYYY')}`
-    : ''
+  const weekRange = (() => {
+    if (!data.length) return ''
+    const start = parseApiDate(data[0].date)
+    const end   = parseApiDate(data[data.length - 1].date)
+    if (!start.isValid() || !end.isValid()) return data[0].date
+    if (start.isSame(end, 'day')) return end.format('D MMM YYYY')
+    return `${start.format('D MMM')} – ${end.format('D MMM YYYY')}`
+  })()
 
   return (
     <div className="page-enter space-y-4">
