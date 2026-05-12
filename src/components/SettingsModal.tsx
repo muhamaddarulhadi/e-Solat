@@ -62,7 +62,7 @@ export function SettingsModal({
       <div className={`
         relative w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl shadow-2xl z-10
         max-h-[90vh] overflow-y-auto
-        ${isDark ? 'bg-slate-900 border border-white/10' : 'bg-white border border-slate-200'}
+        ${isDark ? 'bg-[#18181b] border border-white/10' : 'bg-white border border-slate-200'}
       `}
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
@@ -153,8 +153,8 @@ export function SettingsModal({
             </SettingRow>
 
             {notifSettings.enabled && (
-              <>
-                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-white/10' : 'border-slate-100'}`}>
+              <div className="px-4 pb-4">
+                <div className={`pt-3 mt-0 border-t ${isDark ? 'border-white/10' : 'border-slate-100'}`}>
                   <label className={`text-sm font-medium block mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                     Peringatan {notifSettings.reminderMinutes} minit sebelum
                   </label>
@@ -170,14 +170,14 @@ export function SettingsModal({
                   </div>
                 </div>
 
-                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-white/10' : 'border-slate-100'}`}>
+                <div className={`pt-3 mt-3 border-t ${isDark ? 'border-white/10' : 'border-slate-100'}`}>
                   <p className={`text-sm font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Solat yang diaktifkan</p>
                   <div className="grid grid-cols-2 gap-2">
                     {COUNTABLE_PRAYERS.map(key => (
                       <button
                         key={key}
                         onClick={() => togglePrayer(key)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all
                           ${notifSettings.enabledPrayers.includes(key)
                             ? isDark ? 'bg-primary-500/20 text-primary-300 border border-primary-500/40' : 'bg-primary-50 text-primary-700 border border-primary-300'
                             : isDark ? 'bg-white/5 text-slate-400 border border-white/10' : 'bg-slate-50 text-slate-500 border border-slate-200'
@@ -190,7 +190,7 @@ export function SettingsModal({
                     ))}
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </Section>
 
